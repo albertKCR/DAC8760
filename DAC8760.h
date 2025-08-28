@@ -1,9 +1,14 @@
 #ifndef DAC8760_H
 #define DAC8760_H
 
+#include <stdint.h>
+#include "usb_device.h"
+#include "stm32f4xx_hal.h"
+
 typedef struct {
     uint8_t latch_pin;
     GPIO_TypeDef *latch_port;
+    SPI_HandleTypeDef hspi;
 } DAC8760_t;
 
 // Address Byte
@@ -25,7 +30,7 @@ typedef struct {
 #define READ_GAIN_CAL_REG   0x13
 #define READ_ZERO_CAL_REG   0x17
 
-void DAC8760_Init(DAC8760_t *dac, uint8_t latch, GPIO_TypeDef *port);
+void DAC8760_Init(DAC8760_t *dac, uint8_t latch, GPIO_TypeDef *port, SPI_HandleTypeDef hspi);
 void DAC8760_WriteVoltage(DAC8760_t *dac, uint16_t value);
 void DAC8760_WriteRegister(DAC8760_t *dac, uint8_t reg, uint16_t value);
 uint16_t DAC8760_ReadRegister(DAC8760_t *dac, uint8_t reg);

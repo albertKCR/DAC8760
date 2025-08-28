@@ -1,9 +1,10 @@
 #include "DAC8760.h"
 
-void DAC8760_Init(DAC8760_t *dac, uint8_t latch, GPIO_TypeDef *port)
+void DAC8760_Init(DAC8760_t *dac, uint8_t latch, GPIO_TypeDef *port, SPI_HandleTypeDef hspi)
 {
     dac->latch_pin = latch;
     dac->latch_port = port;
+    dac->hspi = hspi;
 
     DAC8760_LATCH_LOW(dac);
 
@@ -27,7 +28,7 @@ void DAC8760_WriteRegister(DAC8760_t *dac, uint8_t reg, uint16_t value)
     data[1] = value >> 8;
     data[2] = value & 0x00FF;
 
-    HAL_SPI_Transmit(&hspi2, data, 3, 10);
+    HAL_SPI_Transmit(&dac->hspi, data, 3, 10);
 
     DAC8760_LATCH_HIGH(dac);
     DAC8760_LATCH_LOW(dac);
@@ -42,12 +43,12 @@ uint16_t DAC8760_ReadRegister(DAC8760_t *dac, uint8_t reg)
     data[1] = 0x00;
     data[2] = reg & 0x1F;
 
-    HAL_SPI_Transmit(&hspi2, data, 3, 10);
+    HAL_SPI_Transmit(&dac->hspi, data, 3, 10);
 
     DAC8760_LATCH_HIGH(dac);
     DAC8760_LATCH_LOW(dac);
 
-    HAL_SPI_Receive(&hspi2, value, 2, 10);
+    HAL_SPI_Receive(&dac->hspi, value, 2, 10);
 
     return (value[0] << 8) | value[1];
 }
