@@ -1,6 +1,6 @@
 #include "DAC8760.h"
 
-void DAC8760_Init(DAC8760_t *dac, uint8_t latch, GPIO_TypeDef *port, SPI_HandleTypeDef hspi)
+void DAC8760_Init(DAC8760_t *dac, uint16_t latch, GPIO_TypeDef *port, SPI_HandleTypeDef hspi)
 {
     dac->latch_pin = latch;
     dac->latch_port = port;
